@@ -12,7 +12,7 @@
  * From https://gist.github.com/kamkejj/9259121.
  */
 function kidneys_member_files_file_download($uri) {
-
+  watchdog('kidneys_member_files_1', $uri);
   // Get the file record based on the URI. If not in the database just return.
   $files = file_load_multiple(array(), array('uri' => $uri));
   if (count($files)) {
@@ -25,11 +25,12 @@ function kidneys_member_files_file_download($uri) {
       }
     }
   }
-
+  watchdog('kidneys_member_files_2', $uri);
   if (!isset($file)) {
+    watchdog('kidneys_member_files_3', $uri);
     return;
   }
-  watchdog('kidneys_member_files', $uri);
+  watchdog('kidneys_member_files_4', $uri);
   $headers = file_get_content_headers($file);
 
   // Set the header to initiate a download.
