@@ -43,6 +43,7 @@ function kidneys_member_files_page() {
  * From https://gist.github.com/kamkejj/9259121.
  */
 function kidneys_member_files_file_download($uri) {
+  global $user;
   watchdog('kidneys_member_files_1', $uri);
   // Get the file record based on the URI. If not in the database just return.
   $files = file_load_multiple(array(), array('uri' => $uri));
@@ -70,8 +71,22 @@ function kidneys_member_files_file_download($uri) {
   //file_transfer($uri, $headers);
 
   //$mime = file_get_mimetype($uri);
-  return array(
-    'Content-type' => file_get_mimetype($uri),
-    'Content-Length' => filesize($uri),
-  );
+
+  $verified = FALSE;
+
+  if (strpos($uri, 'public://members') === 0) {
+    if (array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
+      return array(
+        'Content-type' => file_get_mimetype($uri),
+        'Content-Length' => filesize($uri),
+      );
+    }
+    else {
+      drupal_goto('/');
+    }
+  }
+  else {
+    return -1;
+  }
+
 }
