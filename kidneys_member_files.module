@@ -26,14 +26,14 @@ function kidneys_member_files_menu() {
  * Page callback.
  */
 function kidneys_member_files_page() {
+  global $user;
   $file = $_GET['file'];
   $roles = $_GET['roles'];
-
-  if (!isset($file)) {
-    return;
+  $verified = FALSE;
+  if (array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
+    drupal_goto('/sites/default/files/' . $file);
   }
-
-  drupal_goto('/sites/default/files/' . $file);
+  drupal_goto('/');
 }
 
 /**
@@ -69,6 +69,9 @@ function kidneys_member_files_file_download($uri) {
 
   //file_transfer($uri, $headers);
 
-  $mime = file_get_mimetype($uri);
-  return array('Content-type:' . $mime);
+  //$mime = file_get_mimetype($uri);
+  return array(
+    'Content-type' => file_get_mimetype($uri),
+    'Content-Length' => filesize($uri),
+  );
 }
