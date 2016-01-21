@@ -69,6 +69,6 @@ function kidneys_member_files_file_download($uri) {
 
   //file_transfer($uri, $headers);
 
-  $mime = file_get_mimetype($filepath);
+  $mime = file_get_mimetype($uri);
   return array('Content-type:' . $mime);
 }
