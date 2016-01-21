@@ -6,6 +6,37 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function kidneys_member_files_menu() {
+
+  $items = array();
+
+  $items['member-file'] = array(
+    'title' => 'Member File',
+    'page callback' => 'kidneys_member_files_page',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback.
+ */
+function kidneys_member_files_page() {
+  $file = $_GET['file'];
+  $roles = $_GET['roles'];
+
+  if (!isset($file)) {
+    return;
+  }
+
+  drupal_goto('/system/files/members/' . $file);
+}
+
+/**
  * Implements hook_file_download().
  *
  * Needed in order to allow file download for private files.
