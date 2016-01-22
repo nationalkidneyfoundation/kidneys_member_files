@@ -19,7 +19,30 @@ function kidneys_member_files_menu() {
     'access arguments' => array('access content'),
   );
 
+  $items['admin/config/user-interface/member-redirect'] = array(
+    'title' => 'Member files config',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('kidneys_member_files_admin_form'),
+    'access arguments' => array('administer users'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   return $items;
+}
+
+/**
+ * Page callback.
+ */
+function kidneys_member_files_admin_form($form, &$form_state) {
+
+  $form['kidneys_member_redirect'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Redirect for non members accessing files'),
+    '#required' => TRUE,
+    '#default_value' => variable_get('kidneys_member_redirect', '/'),
+  );
+
+  return system_settings_form($form);
 }
 
 /**
@@ -33,7 +56,7 @@ function kidneys_member_files_page() {
   if (array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
     drupal_goto('/sites/default/files/' . $file);
   }
-  drupal_goto('/');
+  drupal_goto(variable_get('kidneys_member_redirect', '/'));
 }
 
 /**
@@ -42,6 +65,7 @@ function kidneys_member_files_page() {
  * Needed in order to allow file download for private files.
  * From https://gist.github.com/kamkejj/9259121.
  */
+ /*
 function kidneys_member_files_file_download($uri) {
   global $user;
   watchdog('kidneys_member_files_1', $uri);
@@ -75,6 +99,7 @@ function kidneys_member_files_file_download($uri) {
   $verified = FALSE;
 
   if (strpos($uri, 'public://members') === 0) {
+    watchdog('kidneys_member_files_5', $uri);
     if (array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
       return array(
         'Content-type' => file_get_mimetype($uri),
@@ -82,6 +107,7 @@ function kidneys_member_files_file_download($uri) {
       );
     }
     else {
+      watchdog('kidneys_member_files_5', $uri);
       drupal_goto('/');
     }
   }
@@ -90,3 +116,4 @@ function kidneys_member_files_file_download($uri) {
   }
 
 }
+*/
