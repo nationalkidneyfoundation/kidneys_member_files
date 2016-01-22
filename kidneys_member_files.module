@@ -53,7 +53,7 @@ function kidneys_member_files_page() {
   $file = $_GET['file'];
   $roles = $_GET['roles'];
   $verified = FALSE;
-  if (array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
+  if ($user->uid == 1 || array_filter($user->roles, function($element) { return (strpos(strtolower($element), 'member:') !== FALSE) ? TRUE : FALSE; })) {
     drupal_goto('/sites/default/files/' . $file);
   }
   drupal_goto(variable_get('kidneys_member_redirect', '/'));
